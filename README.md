@@ -54,7 +54,7 @@ Django REST API backend for the RAG Hair Lookbook application.
 
 ```
 lookbook_backend/
-├── apps/                   # Django applications
+├── styles/                  # Styles Models
 ├── lookbook_backend/       # Main project settings
 ├── media/                  # User uploaded files
 ├── staticfiles/           # Collected static files
