@@ -1,6 +1,8 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _  # Missing
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 from taggit.managers import TaggableManager
+import os
 
 
 """
@@ -28,6 +30,30 @@ IMAGE_VIEW = [
     ("FRONT", "Front"),
     ("BACK", "Back"),
 ]
+
+
+def validate_image_file_extension(value):
+    """Validate that uploaded file is a supported image format"""
+    ext = os.path.splitext(value.name)[1].lower()
+    valid_extensions = [".jpg", ".jpeg", ".png", ".webp"]
+    if ext not in valid_extensions:
+        raise ValidationError(
+            f'Unsupported file extension {ext}. Allowed extensions: {", ".join(valid_extensions)}'
+        )
+
+
+def validate_image_file_size(value):
+    """Validate that uploaded file is not too large"""
+    filesize = value.size
+    max_size_mb = 10  # 10MB limit
+    max_size_bytes = max_size_mb * 1024 * 1024
+
+    if filesize > max_size_bytes:
+        raise ValidationError(
+            f"File too large. Size should not exceed {max_size_mb}MB. Current size: {filesize/1024/1024:.1f}MB"
+        )
+
+
 MAINTENANCE_CHOICES = [("LOW", "Low"), ("MEDIUM", "Medium"), ("HIGH", "High")]
 
 
@@ -79,7 +105,10 @@ class Style(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(upload_to="media/")
+    image = models.ImageField(
+        upload_to="media/",
+        validators=[validate_image_file_extension, validate_image_file_size],
+    )
     image_alt = models.CharField(
         help_text="Provide alt text for the image", max_length=350
     )
