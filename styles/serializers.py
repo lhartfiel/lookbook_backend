@@ -5,6 +5,8 @@ from .models import Style, Image
 
 # Serializers define the API representation.
 class ImageSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source="get_type_display")
+    view = serializers.CharField(source="get_view_display")
 
     class Meta:
         model = Image
@@ -14,6 +16,10 @@ class ImageSerializer(serializers.ModelSerializer):
 class StyleSerializer(TaggitSerializer, serializers.ModelSerializer):
     style_image = ImageSerializer(many=True, read_only=True)
     tags = TagListSerializerField()
+    length = serializers.CharField(source="get_length_display")
+    maintenance = serializers.CharField(source="get_maintenance_display")
+    texture = serializers.CharField(source="get_texture_display")
+    thickness = serializers.CharField(source="get_thickness_display")
 
     class Meta:
         model = Style

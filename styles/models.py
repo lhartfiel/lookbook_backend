@@ -106,7 +106,7 @@ class Style(models.Model):
 
 class Image(models.Model):
     image = models.ImageField(
-        upload_to="media/",
+        upload_to="styles/",
         validators=[validate_image_file_extension, validate_image_file_size],
     )
     image_alt = models.CharField(
@@ -130,7 +130,3 @@ class Image(models.Model):
     class Meta:
         verbose_name = _("Image")
         verbose_name_plural = _("Images")
-
-        # - Implement Style model with UUID primary key, stylist name, maintenance level
-        # - Add description field and timestamps
-        # - Set up many-to-many relationship with Image model and TaggableManager for tags

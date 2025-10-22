@@ -4,7 +4,6 @@ from .models import Style, Image
 from .serializers import StyleSerializer, ImageSerializer
 
 
-# Create your views here.
 # ViewSets define the view behavior.
 class StyleViewSet(viewsets.ModelViewSet):
     """
