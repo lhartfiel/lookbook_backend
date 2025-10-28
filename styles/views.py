@@ -45,12 +45,21 @@ def search_styles(request):
             search_method = "text"
 
         # Serialize the results
-        serializer = StyleSerializer(styles, many=True)
+        serializer = StyleSerializer(styles, many=True, context={'request': request})
+
+        # Generate AI response about the results
+        if search_method == "vector":
+            ai_response = vector_service.generate_ai_response(query, search_results, styles)
+        else:
+            # For text search, create a simple VectorSearchService instance for AI response
+            vector_service = VectorSearchService()
+            ai_response = vector_service.generate_ai_response(query, [], styles)
 
         return Response({
             'query': query,
             'results': serializer.data,
             'search_method': search_method,
+            'ai_response': ai_response,
             'message': f'Found {len(styles)} matching styles using {search_method} search'
         })
 
@@ -60,7 +69,6 @@ def search_styles(request):
         }, status=500)
 
 
-# ViewSets define the view behavior.
 class StyleViewSet(viewsets.ModelViewSet):
     """
     Generic viewset for each Style

@@ -105,10 +105,11 @@ class VectorSearchService:
 
             # Extract style IDs and scores
             style_results = []
+            print('matches', results)
             for match in results['matches']:
                 style_id = match['metadata']['style_id']
                 score = match['score']
-                if match['score'] > 0.7:  # Only include high-confidence matches
+                if match['score'] > 0.5:  # Only include high-confidence matches
                     style_results.append({
                     'style_id': style_id,
                     'score': score,
@@ -120,3 +121,48 @@ class VectorSearchService:
         except Exception as e:
             print(f"Error searching styles: {e}")
             return []
+
+    def generate_ai_response(self, query, search_results, styles):
+        """Generate AI response about the search results"""
+        try:
+            if not search_results:
+                return "Sorry, I couldn't find any hairstyles matching your description. Try describing the look you want in different words."
+
+            # Create context from the found styles
+            styles_context = []
+            for style in styles[:5]:  # Limit to top 5 for context
+                tags = ", ".join(style.tags.names()) if style.tags.exists() else "No tags"
+                style_info = f"- {style.title} by {style.stylist_name}: {style.description or 'No description'} (Length: {style.get_length_display()}, Texture: {style.get_texture_display()}, Maintenance: {style.get_maintenance_display()}, Tags: {tags})"
+                styles_context.append(style_info)
+
+            context_text = "\n".join(styles_context)
+
+            prompt = f"""You are a professional hairstylist helping clients find the perfect hairstyle.
+
+            User's request: "{query}"
+
+            Here are the matching hairstyles I found:
+            {context_text}
+
+            Please provide a helpful, friendly response that:
+            1. Acknowledges their request and references them as a trend setter, a beauty or something else stylish
+            2. Briefly describes why these styles match what they're looking for
+            3. Highlights 2-3 key styles that would work best
+            4. Gives practical advice about maintenance, styling, or considerations
+            5. Keep it conversational and encouraging
+
+            Response should be 1-2 paragraphs maximum."""
+            response = self.openai_client.responses.create(
+                model="gpt-4o-mini",
+                instructions="You are a helpful hairstylist assistant.",
+                input=prompt,
+                max_output_tokens=250, #1 token is approximately 4 characters or 0.75 words for English text.
+                temperature=0.7
+            )
+
+            return response.output[0].content[0].text
+
+        except Exception as e:
+            print(f"Error generating AI response: {e}")
+            return f"I found {len(styles)} hairstyles that match your request for '{query}'. Check out the results below!"
+
