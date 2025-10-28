@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from django.shortcuts import render
 from taggit.serializers import TagListSerializerField, TaggitSerializer
 from .models import Style, Image
 
@@ -7,10 +8,19 @@ from .models import Style, Image
 class ImageSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="get_type_display")
     view = serializers.CharField(source="get_view_display")
+    photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Image
         fields = "__all__"
+
+    def get_photo_url(self, obj):
+        request = self.context.get('request')
+        if request and obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        elif obj.image:
+            return obj.image.url
+        return None
 
 
 class StyleSerializer(TaggitSerializer, serializers.ModelSerializer):

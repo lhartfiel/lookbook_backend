@@ -44,6 +44,7 @@ sdist/
 var/
 wheels/
 venv
+venv310
 *.egg-info/
 .installed.cfg
 *.egg
