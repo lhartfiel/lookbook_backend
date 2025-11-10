@@ -34,6 +34,8 @@ class VectorSearchService:
         text_parts = [
             style.title,
             style.description or "",
+            f"Face Shape: {style.get_face_shape_display()}",
+            f"Gender: {style.get_gender_display()}",
             f"Length: {style.get_length_display()}",
             f"Texture: {style.get_texture_display()}",
             f"Thickness: {style.get_thickness_display()}",
@@ -60,6 +62,8 @@ class VectorSearchService:
                 'style_id': style.id,
                 'title': style.title,
                 'description': style.description or "",
+                'face_shape': style.face_shape,
+                'gender': style.gender,
                 'length': style.length,
                 'texture': style.texture,
                 'thickness': style.thickness,
@@ -150,6 +154,8 @@ class VectorSearchService:
             3. Highlights 2-3 key styles that would work best
             4. Gives practical advice about maintenance, styling, or considerations
             5. Keep it conversational and encouraging
+            6. Return a max of 200 words
+            7. Each paragraph should be a max length of 75 words
 
             Response should be 1-2 paragraphs maximum."""
             response = self.openai_client.responses.create(

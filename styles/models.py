@@ -8,6 +8,9 @@ import os
 """
 Tuples for choice options
 """
+FACE_SHAPE = [('ROUND', 'Round'), ('SQUARE', 'Square'), ('OVAL', 'Oval'), ('HEART', 'Heart'), ('DIAMOND', 'Diamond'), ('OBLONG', 'Oblong'), ('TRIANGLE', 'Triangle')]
+
+GENDER = [("WOMAN", "Woman"), ("MAN", "Man"), ("OTHER", "Other")]
 
 HAIR_LENGTH = [("SHORT", "Short"), ("MEDIUM", "Medium"), ("LONG", "Long")]
 
@@ -30,6 +33,8 @@ IMAGE_VIEW = [
     ("FRONT", "Front"),
     ("BACK", "Back"),
 ]
+
+MAINTENANCE_CHOICES = [("LOW", "Low"), ("MEDIUM", "Medium"), ("HIGH", "High")]
 
 
 def validate_image_file_extension(value):
@@ -54,9 +59,6 @@ def validate_image_file_size(value):
         )
 
 
-MAINTENANCE_CHOICES = [("LOW", "Low"), ("MEDIUM", "Medium"), ("HIGH", "High")]
-
-
 class Style(models.Model):
     """
     Individual Style linked to a specific Hair Stylist
@@ -67,6 +69,17 @@ class Style(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     description = models.TextField(
         help_text="Optional description for the style", blank=True
+    )
+    face_shape = models.CharField(
+        choices=FACE_SHAPE,
+        max_length=10,
+        default="HEART",
+        blank=True
+    )
+    gender = models.CharField(
+        choices=GENDER,
+        max_length=10,
+        default="WOMAN",
     )
     length = models.CharField(
         choices=HAIR_LENGTH,
