@@ -14,21 +14,21 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+# Explicitly specify the .env file path
+env_path = BASE_DIR / '.env'
+load_dotenv(dotenv_path=env_path)
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-)
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-key-change-in-production")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")]
 
 
 # Application definition
@@ -178,7 +178,12 @@ REST_FRAMEWORK = {
 
 
 # CORS configuration
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://localhost:8000", "http://127.0.0.1:8000", "lookbook-lhartfiel.pythonanywhere.com"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://lookbook-lhartfiel.pythonanywhere.com"
+]
 CORS_ALLOW_CREDENTIALS = True
 
 # External service configuration
