@@ -26,6 +26,8 @@ class ImageSerializer(serializers.ModelSerializer):
 class StyleSerializer(TaggitSerializer, serializers.ModelSerializer):
     style_image = ImageSerializer(many=True, read_only=True)
     tags = TagListSerializerField()
+    face_shape = serializers.CharField(source="get_face_shape_display")
+    gender = serializers.CharField(source="get_gender_display")
     length = serializers.CharField(source="get_length_display")
     maintenance = serializers.CharField(source="get_maintenance_display")
     texture = serializers.CharField(source="get_texture_display")

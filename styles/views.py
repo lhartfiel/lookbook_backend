@@ -69,6 +69,36 @@ def search_styles(request):
         }, status=500)
 
 
+class FavoritesViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Favorited items
+    """
+    queryset = Style.objects.all()
+    serializer_class = StyleSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        ids_param = self.request.query_params.get('ids', '')
+        if not ids_param:
+            return Style.objects.none()
+
+        try:
+            # Parse comma-separated IDs
+            ids = [int(id.strip()) for id in ids_param.split(',') if id.strip()]
+            return Style.objects.filter(id__in=ids)
+        except ValueError:
+            return Style.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response({
+            'count': queryset.count(),
+            'results': serializer.data,
+        })
+
+
 class StyleViewSet(viewsets.ModelViewSet):
     """
     Generic viewset for each Style
