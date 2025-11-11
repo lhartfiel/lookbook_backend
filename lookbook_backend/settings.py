@@ -22,6 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env_path = BASE_DIR / '.env'
 load_dotenv(dotenv_path=env_path)
 
+# Debug: Check if .env file exists and is being loaded
+import sys
+if not env_path.exists():
+    print(f"WARNING: .env file not found at {env_path}", file=sys.stderr)
+else:
+    print(f"INFO: .env file found at {env_path}", file=sys.stderr)
+    print(f"INFO: ALLOWED_HOSTS from env: {os.getenv('ALLOWED_HOSTS')}", file=sys.stderr)
+    print(f"INFO: CORS_ALLOWED_ORIGINS from env: {os.getenv('CORS_ALLOWED_ORIGINS')}", file=sys.stderr)
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-key-change-in-production")
 
@@ -178,12 +187,12 @@ REST_FRAMEWORK = {
 
 
 # CORS configuration
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "https://lookbook-lhartfiel.pythonanywhere.com"
-]
+# Read from environment variable with fallback to defaults
+cors_origins_env = os.getenv(
+    "CORS_ALLOWED_ORIGINS",
+    "http://localhost:3000,http://localhost:8000,http://127.0.0.1:8000,https://lookbook-lhartfiel.pythonanywhere.com,https://hairstyleslookbook.netlify.app"
+)
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(",")]
 CORS_ALLOW_CREDENTIALS = True
 
 # External service configuration
