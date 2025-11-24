@@ -120,24 +120,38 @@ OPENAI_API_KEY=your-openai-api-key
 
 ```
 lookbook_backend/
-├── styles/                    # Main app
-│   ├── models.py             # Style and Image models
-│   ├── views.py              # API endpoints
-│   ├── serializers.py        # DRF serializers
-│   ├── vector_search.py      # Pinecone & OpenAI integration
-│   ├── urls.py               # App URL routing
-│   └── admin.py              # Django admin configuration
-├── lookbook_backend/         # Project settings
-│   ├── settings.py           # Django settings
-│   ├── urls.py               # Main URL routing
-│   └── wsgi.py               # WSGI configuration
-├── media/                    # User uploaded files
-│   └── styles/               # Hairstyle images
-├── manage.py                 # Django management script
-├── requirements.txt          # Python dependencies
-├── .env                      # Environment variables (not in git)
-├── .env.example              # Environment template
-└── README.md                 # This file
+├── styles/                           # Main Django app
+│   ├── management/                   # Custom management commands
+│   │   └── commands/
+│   │       ├── index_styles.py       # Index styles in Pinecone
+│   │       └── test_connections.py   # Test API connections
+│   ├── migrations/                   # Database migrations
+│   ├── models.py                     # Style and Image models
+│   ├── views.py                      # API endpoints
+│   ├── serializers.py                # DRF serializers
+│   ├── vector_search.py              # Pinecone & OpenAI integration
+│   ├── urls.py                       # App URL routing
+│   ├── admin.py                      # Django admin configuration
+│   ├── apps.py                       # App configuration
+│   ├── signals.py                    # Django signals
+│   └── tests.py                      # Unit tests
+├── lookbook_backend/                 # Project settings
+│   ├── settings.py                   # Django settings
+│   ├── urls.py                       # Main URL routing
+│   ├── wsgi.py                       # WSGI configuration
+│   ├── asgi.py                       # ASGI configuration
+│   └── __init__.py
+├── media/                            # User uploaded files
+│   └── styles/                       # Hairstyle images
+├── venv/                             # Virtual environment (not in git)
+├── manage.py                         # Django management script
+├── requirements.txt                  # Python dependencies
+├── db.sqlite3                        # SQLite database (development)
+├── .env                              # Environment variables (not in git)
+├── .env.example                      # Environment template
+├── .gitignore                        # Git ignore rules
+├── test_pinecone_standalone.py       # Standalone Pinecone test
+└── README.md                         # This file
 ```
 
 ## API Endpoints

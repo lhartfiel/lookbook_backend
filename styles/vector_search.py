@@ -113,7 +113,7 @@ class VectorSearchService:
             for match in results['matches']:
                 style_id = match['metadata']['style_id']
                 score = match['score']
-                if match['score'] > 0.5:  # Only include high-confidence matches
+                if match['score'] >= 0.75:  # Only include high-confidence matches
                     style_results.append({
                     'style_id': style_id,
                     'score': score,
@@ -162,7 +162,7 @@ class VectorSearchService:
                 model="gpt-4o-mini",
                 instructions="You are a helpful hairstylist assistant.",
                 input=prompt,
-                max_output_tokens=250, #1 token is approximately 4 characters or 0.75 words for English text.
+                max_output_tokens=250, # 1 token is approximately 4 characters or 0.75 words for English text.
                 temperature=0.7
             )
 
