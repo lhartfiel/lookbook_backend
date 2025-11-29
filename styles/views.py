@@ -14,10 +14,13 @@ def search_styles(request):
     """
     Search styles using natural language query
     """
-    query = request.data.get('query', '')
+    query = request.data.get('query', '').strip()
 
     if not query:
         return Response({'error': 'Query is required'}, status=400)
+
+    if len(query) > 500:
+        return Response({'error': 'Query too long (max 500 characters)'}, status=400)
 
     try:
         # Try vector search first, fall back to text search
